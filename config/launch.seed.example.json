@@ -1,0 +1,15 @@
+{
+  "_comment": "Example real-event seed. Point VL_SEED_PATH at a file like this to launch with real bins/teams/rewards and a clean slate (no demo users/deposits). Replace coordinates with the actual bin GPS locations. teams[].baselinePoints is an optional funded head-start so the bracket looks alive on day one (use 0 for a true cold start).",
+  "bins": [
+    { "code": "MM-01", "name": "Munchie Mart · Main", "locationType": "retail", "lat": 36.14542, "lng": -86.80312 },
+    { "code": "RND-02", "name": "Rand Dining · North", "locationType": "dining", "lat": 36.14861, "lng": -86.80444 }
+  ],
+  "teams": [
+    { "id": "team-towers", "name": "Towers", "type": "dorm", "region": "West", "seed": 1, "baselinePoints": 0 },
+    { "id": "team-commons", "name": "The Commons", "type": "dorm", "region": "East", "seed": 1, "baselinePoints": 0 }
+  ],
+  "rewards": [
+    { "id": "rw-coffee", "name": "Free coffee · Suzie's", "cost": 120, "description": "Any drip or hot tea at a campus Suzie's.", "sponsor": "Vanderbilt Campus Dining" },
+    { "id": "rw-meal", "name": "$5 Meal Money credit", "cost": 500, "description": "Loaded to your Commodore Card.", "sponsor": "Vanderbilt Sustainability" }
+  ]
+}

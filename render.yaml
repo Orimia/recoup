@@ -1,0 +1,48 @@
+# Render Blueprint — fastest path to a real, HTTPS, persistent VandyLoop pilot.
+# One Node web service + a persistent disk for the file store. No database to
+# provision. In the Render dashboard: New > Blueprint > point at this repo.
+#
+# After the first deploy, set APP_URL to the service's URL (for verification links),
+# and add ANTHROPIC_API_KEY / RESEND_API_KEY if you want live vision / real emails.
+services:
+  - type: web
+    name: vandyloop
+    runtime: node
+    plan: starter # persistent disks require a paid instance type
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    disk:
+      name: vandyloop-data
+      # Must equal <cwd>/.data — Render runs from /opt/render/project/src
+      mountPath: /opt/render/project/src/.data
+      sizeGB: 1
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NODE_ENV
+        value: production
+      # Secrets — Render generates strong random values on first deploy.
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: BIN_CODE_SECRET
+        generateValue: true
+      - key: ADMIN_KEY
+        generateValue: true
+      # Real-launch posture.
+      - key: ALLOWED_EMAIL_DOMAINS
+        value: vanderbilt.edu
+      - key: STRICT_VERIFICATION
+        value: "true" # require presence (geofence or bin code) to earn
+      # Set after first deploy / as needed (sync:false = not stored in the blueprint).
+      - key: APP_URL
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM
+        sync: false
+      - key: VL_SEED_PATH
+        sync: false

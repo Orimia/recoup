@@ -1,0 +1,151 @@
+@import "tailwindcss";
+
+/*
+  VandyLoop design tokens — premium, restrained, executive-grade.
+  Not cyberpunk, not sustainability cliché. Warm paper + deep ink + one muted green.
+*/
+
+:root {
+  /* Neutrals — warm paper palette */
+  --paper: #fafaf7;
+  --paper-2: #f3f2ec;
+  --paper-3: #e8e7df;
+  --ink: #0f1511;
+  --ink-2: #2a322c;
+  --ink-3: #4b5350;
+  --ink-4: #7a817d;
+  --ink-5: #a9aeab;
+  --line: #e4e2d9;
+  --line-strong: #c9c5b8;
+
+  /* Brand — one muted forest green, used sparingly */
+  --brand: #1e5b46;
+  --brand-2: #2d7a5f;
+  --brand-soft: #d9e8e0;
+  --brand-wash: #eff4f0;
+
+  /* Signal colors — warm, non-neon */
+  --amber: #b47c3e;
+  --amber-soft: #f3e4c9;
+  --amber-wash: #faf3e4;
+  --rose: #a34b3f;
+  --rose-soft: #edc9c3;
+  --rose-wash: #f7e4e0;
+  --slate: #3f5665;
+  --slate-soft: #d6dee5;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(15, 21, 17, 0.04), 0 1px 1px rgba(15, 21, 17, 0.03);
+  --shadow-md: 0 2px 4px rgba(15, 21, 17, 0.04), 0 6px 16px rgba(15, 21, 17, 0.06);
+  --shadow-lg: 0 10px 40px rgba(15, 21, 17, 0.08);
+
+  --radius: 0.75rem;
+  --radius-sm: 0.5rem;
+  --radius-lg: 1rem;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+  --color-ink-5: var(--ink-5);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-brand: var(--brand);
+  --color-brand-2: var(--brand-2);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-wash: var(--brand-wash);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-amber-wash: var(--amber-wash);
+  --color-rose: var(--rose);
+  --color-rose-soft: var(--rose-soft);
+  --color-rose-wash: var(--rose-wash);
+  --color-slate-ink: var(--slate);
+  --color-slate-soft: var(--slate-soft);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+html, body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-feature-settings: "ss01", "cv01", "cv11";
+}
+
+/* Typographic system */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.numeric {
+  font-feature-settings: "tnum", "ss01";
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hairline borders everywhere */
+.hairline {
+  border: 1px solid var(--line);
+}
+.hairline-strong {
+  border: 1px solid var(--line-strong);
+}
+
+/* Subtle grid background utility */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(15,21,17,0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15,21,17,0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-grid-fade {
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, black 40%, transparent 80%);
+}
+
+/* Scrollbar polish */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+/* Focus rings */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.pulse-dot {
+  animation: pulse-dot 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+/* Remove default Next.js dark mode from create-next-app */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light;
+  }
+}

@@ -1,0 +1,4 @@
+.data
+.env*
+.claude-flow
+scripts
