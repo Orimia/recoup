@@ -177,6 +177,36 @@ function createFileBackend(): Backend {
       if (row) Object.assign(row, partial);
       persist(d);
     },
+    // Single-process file backend: check-then-act is atomic (no await between),
+    // so these mirror the Postgres atomic guarantees for local/dev use.
+    async insertIfNew(t, id, obj) {
+      const d = db();
+      const arr = rows(d, t);
+      if (arr.some((x) => x.id === id)) return false;
+      arr.push(obj as { id: string });
+      persist(d);
+      return true;
+    },
+    async bump(t, id, deltas, set) {
+      const d = db();
+      const row = rows(d, t).find((x) => x.id === id) as Record<string, unknown> | undefined;
+      if (!row) return;
+      for (const [k, v] of Object.entries(deltas)) {
+        row[k] = (typeof row[k] === "number" ? (row[k] as number) : 0) + v;
+      }
+      if (set) Object.assign(row, set);
+      persist(d);
+    },
+    async spend(t, id, field, amount) {
+      const d = db();
+      const row = rows(d, t).find((x) => x.id === id) as Record<string, unknown> | undefined;
+      if (!row) return false;
+      const cur = typeof row[field] === "number" ? (row[field] as number) : 0;
+      if (cur < amount) return false;
+      row[field] = cur - amount;
+      persist(d);
+      return true;
+    },
   };
 }
 
@@ -217,6 +247,25 @@ export function updateUser(id: string, partial: Partial<User>): Promise<void> {
 }
 export function insertDeposit(d: Deposit): Promise<void> {
   return backend().insert("deposits", d.id, d);
+}
+/** Insert a deposit only if its id is new. Returns false if it already existed
+ *  (a retried/duplicate event), so the caller can skip awarding twice. */
+export function insertDepositIfNew(d: Deposit): Promise<boolean> {
+  return backend().insertIfNew("deposits", d.id, d);
+}
+/** Atomically add to a user's numeric counters (and optionally set fields like
+ *  streakDays/lastDepositDay). Safe under concurrent deposits. */
+export function bumpUser(
+  id: string,
+  deltas: Partial<Record<"points" | "lifetimePoints" | "deposits", number>>,
+  set?: Partial<User>
+): Promise<void> {
+  return backend().bump("users", id, deltas as Record<string, number>, set as Record<string, unknown> | undefined);
+}
+/** Atomically debit a user's points only if the balance covers `cost`. Returns
+ *  false if insufficient — prevents concurrent redemptions from double-spending. */
+export function spendUserPoints(id: string, cost: number): Promise<boolean> {
+  return backend().spend("users", id, "points", cost);
 }
 export function updateDeposit(id: string, partial: Partial<Deposit>): Promise<void> {
   return backend().patch("deposits", id, partial);

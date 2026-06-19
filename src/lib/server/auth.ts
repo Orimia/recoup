@@ -24,21 +24,32 @@ export function verifyPassword(password: string, hash: string, salt: string): bo
   return candidate.length === expected.length && timingSafeEqual(candidate, expected);
 }
 
+// Token = `${userId}.${issuedAtSec}.${hmac(userId.issuedAtSec)}`. The issued-at is
+// signed, so the server can expire a session even if the client keeps the cookie
+// (maxAge is only a client-side hint). userIds contain no ".", so the split is safe.
 function sign(userId: string): string {
-  const mac = createHmac("sha256", SECRET).update(userId).digest("hex");
-  return `${userId}.${mac}`;
+  const payload = `${userId}.${Math.floor(Date.now() / 1000).toString(36)}`;
+  const mac = createHmac("sha256", SECRET).update(payload).digest("hex");
+  return `${payload}.${mac}`;
 }
 
 function unsign(token: string | undefined): string | null {
   if (!token) return null;
   const dot = token.lastIndexOf(".");
   if (dot < 0) return null;
-  const userId = token.slice(0, dot);
+  const payload = token.slice(0, dot);
   const mac = token.slice(dot + 1);
-  const expected = createHmac("sha256", SECRET).update(userId).digest("hex");
+  const expected = createHmac("sha256", SECRET).update(payload).digest("hex");
   const a = Buffer.from(mac);
   const b = Buffer.from(expected);
   if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
+
+  const sep = payload.lastIndexOf(".");
+  if (sep < 0) return null;
+  const userId = payload.slice(0, sep);
+  const issued = parseInt(payload.slice(sep + 1), 36);
+  if (!userId || !Number.isFinite(issued)) return null;
+  if (Date.now() / 1000 - issued > MAX_AGE) return null; // server-side expiry
   return userId;
 }
 

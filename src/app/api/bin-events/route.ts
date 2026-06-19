@@ -1,10 +1,10 @@
-import { insertDeposit, loadDB, updateUser } from "@/lib/server/db";
+import { bumpUser, insertDepositIfNew, loadDB } from "@/lib/server/db";
 import { bad, ok, readJson, str } from "@/lib/server/http";
 import { verifyEvent, type StationEvent } from "@/lib/server/stations";
 import { award, dayKey } from "@/lib/challenge/points";
 import { config } from "@/lib/server/config";
 import { publicUser } from "@/lib/server/views";
-import type { Deposit, Material, User } from "@/lib/server/types";
+import type { Deposit, Material } from "@/lib/server/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -56,8 +56,10 @@ export async function POST(req: Request) {
   });
 
   const deposit: Deposit = {
-    // Deterministic id from eventId → a concurrent duplicate can't create a second
-    // row (ON CONFLICT(id) is a no-op), on top of the sequential dedup check above.
+    // Deterministic id from eventId. insertDepositIfNew (ON CONFLICT DO NOTHING)
+    // makes recording atomic: a concurrent or retried duplicate fails to insert,
+    // so the award below runs at most once per event. The sequential check above
+    // is just a fast path that avoids the wasted work in the common case.
     id: `dep-evt-${eventId}`,
     userId: user.id,
     binCode: station.binCode,
@@ -78,24 +80,24 @@ export async function POST(req: Request) {
     eventId,
   };
 
-  await insertDeposit(deposit);
+  // Atomic dedup: if the row already exists (retry/concurrent duplicate), the
+  // award has already happened — return without awarding again.
+  const inserted = await insertDepositIfNew(deposit);
+  if (!inserted) return ok({ duplicate: true });
+
   if (result.points > 0) {
-    const patch: Partial<User> = {
-      points: user.points + result.points,
-      lifetimePoints: user.lifetimePoints + result.points,
-      deposits: user.deposits + 1,
-    };
-    if (result.countedTowardCap) {
-      patch.streakDays = result.newStreakDays;
-      patch.lastDepositDay = today;
-    }
-    await updateUser(user.id, patch);
+    await bumpUser(
+      user.id,
+      { points: result.points, lifetimePoints: result.points, deposits: 1 },
+      result.countedTowardCap ? { streakDays: result.newStreakDays, lastDepositDay: today } : undefined
+    );
   } else {
-    await updateUser(user.id, { deposits: user.deposits + 1 });
+    await bumpUser(user.id, { deposits: 1 });
   }
 
   const db2 = await loadDB();
-  const updated = db2.users.find((u) => u.id === user.id)!;
+  const updated = db2.users.find((u) => u.id === user.id);
+  if (!updated) return bad("Account not found.", 404);
   return ok({
     accepted: isAluminum,
     pointsAwarded: result.points,

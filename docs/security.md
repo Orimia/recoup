@@ -19,6 +19,7 @@ Three properties make that achievable here, and they're why launching with *our 
 | 7 | **Brute-force / credential stuffing** | Per-account lockout (5 fails → 15 min) + per-IP rate limit on login. |
 | 8 | **API abuse** (skip the UI) | All scoring is server-authoritative; daily cap (20 verified/day); burst detection (6/min → `rate_burst`). |
 | 9 | **Anything that slips through** | Every deposit carries `flags[]` + a `trust` score; operators void fraudulent deposits → points clawed back (reversible). |
+| 10 | **Concurrency abuse** (fire many redeems/deposits at once) | All point mutations are atomic at the database: redemptions debit with a conditional `UPDATE ... WHERE points >= cost`, awards use single-statement increments, and signed bin events insert-if-new. A reward can't be double-spent and a retried event can't double-count. |
 
 ## The layers (defense in depth)
 
@@ -43,6 +44,10 @@ Three properties make that achievable here, and they're why launching with *our 
 - **Claw-back:** void a deposit → points reversed on the user (lifetime + balance).
 - Daily cap + burst detection.
 - *The killer reconciliation (Phase 2):* weigh the aluminum actually collected from each bin at hauling, compare to the sum of claimed deposits, and down-weight bins whose claims exceed reality. The hauler already empties the bin; you just add a scale. This anchors the whole economy to physical ground truth, cheaply.
+
+**5. Transactional integrity — `src/lib/server/store-pg.ts`, `db.ts`**
+- Points are money-like, so every mutation is **atomic and concurrency-safe**, not read-modify-write over a snapshot (which loses updates on a serverless platform that runs requests in parallel). Redemptions use a conditional debit (`UPDATE ... SET points = points - cost WHERE points >= cost RETURNING id`), so two simultaneous redeems can't both succeed — no double-spend. Awards use single-statement jsonb increments, so concurrent deposits can't lose points. Signed bin events are recorded with `INSERT ... ON CONFLICT DO NOTHING`, so a firmware retry or duplicate counts **exactly once**.
+- These guarantees are covered by tests on a real Postgres engine (`tests/atomic-store.test.ts`), run in CI.
 
 ## Enforcement posture
 

@@ -1,5 +1,5 @@
 import { getSessionUser } from "@/lib/server/auth";
-import { insertRedemption, loadDB, newId, updateUser } from "@/lib/server/db";
+import { bumpUser, insertRedemption, loadDB, newId, spendUserPoints } from "@/lib/server/db";
 import { bad, ok, readJson, str } from "@/lib/server/http";
 import { publicUser } from "@/lib/server/views";
 import { config } from "@/lib/server/config";
@@ -22,7 +22,12 @@ export async function POST(req: Request) {
   const db = await loadDB();
   const reward = db.rewards.find((r) => r.id === rewardId);
   if (!reward) return bad("Unknown reward.");
-  if (sessionUser.points < reward.cost) return bad("Not enough points yet.", 402);
+
+  // Atomic conditional debit: succeeds only if the balance still covers the cost.
+  // Two concurrent redeems can't both pass (the second sees the debited balance),
+  // so a reward can't be double-spent. lifetimePoints is untouched — standing holds.
+  const debited = await spendUserPoints(sessionUser.id, reward.cost);
+  if (!debited) return bad("Not enough points yet.", 402);
 
   const redemption: Redemption = {
     id: newId("rdm"),
@@ -34,11 +39,16 @@ export async function POST(req: Request) {
     createdAt: Date.now(),
   };
 
-  // lifetimePoints is untouched — leaderboard standing stays.
-  await updateUser(sessionUser.id, { points: sessionUser.points - reward.cost });
-  await insertRedemption(redemption);
+  try {
+    await insertRedemption(redemption);
+  } catch (e) {
+    // Recording failed after debiting — refund so points aren't silently lost.
+    await bumpUser(sessionUser.id, { points: reward.cost });
+    throw e;
+  }
 
   const db2 = await loadDB();
-  const updated = db2.users.find((u) => u.id === sessionUser.id)!;
+  const updated = db2.users.find((u) => u.id === sessionUser.id);
+  if (!updated) return bad("Account not found.", 404);
   return ok({ redemption, user: publicUser(updated, db2) });
 }

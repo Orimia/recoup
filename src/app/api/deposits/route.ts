@@ -1,5 +1,5 @@
 import { getSessionUser } from "@/lib/server/auth";
-import { insertDeposit, loadDB, newId, updateUser } from "@/lib/server/db";
+import { bumpUser, insertDeposit, loadDB, newId } from "@/lib/server/db";
 import { bad, ok, readJson, str } from "@/lib/server/http";
 import { classify } from "@/lib/server/classify";
 import { award, dayKey } from "@/lib/challenge/points";
@@ -9,7 +9,7 @@ import { verifyBinCode } from "@/lib/server/bincodes";
 import { checkGeofence } from "@/lib/server/geo";
 import { hashImage } from "@/lib/server/imagehash";
 import { assess, flagReason, isHardFail } from "@/lib/server/fraud";
-import type { Deposit, User } from "@/lib/server/types";
+import type { Deposit } from "@/lib/server/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -114,19 +114,17 @@ export async function POST(req: Request) {
   };
 
   await insertDeposit(deposit);
-  const userPatch: Partial<User> = {
-    points: sessionUser.points + points,
-    lifetimePoints: sessionUser.lifetimePoints + points,
-    deposits: sessionUser.deposits + 1,
-  };
-  if (countsTowardStreak) {
-    userPatch.streakDays = result.newStreakDays;
-    userPatch.lastDepositDay = today;
-  }
-  await updateUser(sessionUser.id, userPatch);
+  // Atomic increment so two concurrent deposits from the same user can't lose
+  // points to a read-modify-write race (both reading the same snapshot balance).
+  await bumpUser(
+    sessionUser.id,
+    { points, lifetimePoints: points, deposits: 1 },
+    countsTowardStreak ? { streakDays: result.newStreakDays, lastDepositDay: today } : undefined
+  );
 
   const db2 = await loadDB();
-  const updated = db2.users.find((u) => u.id === sessionUser.id)!;
+  const updated = db2.users.find((u) => u.id === sessionUser.id);
+  if (!updated) return bad("Account not found.", 404);
 
   return ok({
     deposit: {
