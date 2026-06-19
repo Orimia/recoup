@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/Orimia/recoup/actions/workflows/ci.yml/badge.svg)](https://github.com/Orimia/recoup/actions/workflows/ci.yml)
 
+![VandyLoop, verified recycle-to-reward for universities](docs/hero.png)
+
 Verified recycle-to-reward for universities. Students earn instant rewards for recycling that is actually verified, and the school gets clean, can-by-can data it can act on.
 
 **Live demo: https://vandyloop.vercel.app** (sign up, log a return, watch it flow through verification, reward, and the operator dashboard)
