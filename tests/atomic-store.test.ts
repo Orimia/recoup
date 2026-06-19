@@ -58,3 +58,28 @@ test("insertIfNew dedups on id so a retried event is recorded once", async () =>
   const db = await backend.loadDB();
   assert.equal(db.deposits.filter((d) => d.id === "dep-evt-x").length, 1);
 });
+
+test("bump clamps at zero so a claw-back can't drive a balance negative", async () => {
+  await backend.bump("users", "u1", { points: -1000 }); // u1 holds far less than 1000
+  assert.equal((await backend.loadDB()).users.find((x) => x.id === "u1")?.points, 0);
+});
+
+test("voidDepositOnce reverses points exactly once, then is a no-op (idempotent)", async () => {
+  await backend.insert("deposits", "dep-void", { id: "dep-void", pointsAwarded: 15, voided: false });
+  assert.equal(await backend.voidDepositOnce("dep-void"), 15); // reverses the awarded points
+  assert.equal(await backend.voidDepositOnce("dep-void"), null); // already voided → no double claw-back
+  const dep = (await backend.loadDB()).deposits.find((d) => d.id === "dep-void");
+  assert.equal(dep?.voided, true);
+  assert.equal(dep?.pointsAwarded, 0);
+});
+
+test("the email unique index blocks a second account with the same email", async () => {
+  await backend.insert("users", "ua", { id: "ua", email: "dupe@vanderbilt.edu" });
+  await assert.rejects(() => backend.insert("users", "ub", { id: "ub", email: "dupe@vanderbilt.edu" }));
+});
+
+test("the nfcId unique index blocks linking one card to two accounts", async () => {
+  await backend.insert("users", "uc", { id: "uc", nfcId: "04TESTCARD" });
+  await backend.insert("users", "ud", { id: "ud" });
+  await assert.rejects(() => backend.patch("users", "ud", { nfcId: "04TESTCARD" }));
+});

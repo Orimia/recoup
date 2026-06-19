@@ -1,4 +1,4 @@
-import { loadDB, updateDeposit, updateUser } from "@/lib/server/db";
+import { bumpUser, loadDB, voidDepositOnce } from "@/lib/server/db";
 import { bad, ok, readJson, str } from "@/lib/server/http";
 import { adminAuthed } from "@/lib/server/admin";
 import { publicUser } from "@/lib/server/views";
@@ -18,18 +18,17 @@ export async function POST(req: Request) {
   if (!deposit) return bad("Unknown deposit.", 404);
   if (deposit.voided) return bad("Already voided.");
 
-  const reversed = deposit.pointsAwarded;
-  await updateDeposit(deposit.id, { voided: true, pointsAwarded: 0 });
+  // Atomic + idempotent: flips voided and returns the points to reverse exactly
+  // once, even under two concurrent void requests. null = it was already voided.
+  const reversed = await voidDepositOnce(deposit.id);
+  if (reversed === null) return bad("Already voided.");
 
-  const user = db.users.find((u) => u.id === deposit.userId);
-  if (user) {
-    await updateUser(user.id, {
-      points: Math.max(0, user.points - reversed),
-      lifetimePoints: Math.max(0, user.lifetimePoints - reversed),
-    });
+  if (reversed > 0) {
+    // Negative deltas; bump() clamps at 0 so a balance already spent down can't go negative.
+    await bumpUser(deposit.userId, { points: -reversed, lifetimePoints: -reversed });
   }
 
   const db2 = await loadDB();
-  const updated = user ? db2.users.find((u) => u.id === user.id) : null;
+  const updated = db2.users.find((u) => u.id === deposit.userId);
   return ok({ voided: true, user: updated ? publicUser(updated, db2) : null });
 }

@@ -36,7 +36,7 @@ This repo has two halves and the line between them matters. Share this with a re
 
 ## Not built (out of scope, on purpose)
 
-VandyID SSO, meal-money transfers, hardware/IoT, model-training pipelines, email verification. These are the **Phase 3** items the landing page explicitly defers until the challenge has proven itself — that deferral is the strategy, not a gap.
+VandyID SSO, meal-money transfers, model-training pipelines, and the assembled bin hardware (its firmware + signed-event API are written; see `docs/hardware-verification.md`). These are the **Phase 3** items the landing page explicitly defers until the challenge has proven itself — that deferral is the strategy, not a gap. (Email verification *is* built and gates redemption.)
 
 ## How to explain it in one breath
 

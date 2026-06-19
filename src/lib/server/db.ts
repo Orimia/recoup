@@ -192,7 +192,8 @@ function createFileBackend(): Backend {
       const row = rows(d, t).find((x) => x.id === id) as Record<string, unknown> | undefined;
       if (!row) return;
       for (const [k, v] of Object.entries(deltas)) {
-        row[k] = (typeof row[k] === "number" ? (row[k] as number) : 0) + v;
+        const base = typeof row[k] === "number" ? (row[k] as number) : 0;
+        row[k] = Math.max(0, base + v); // clamp at 0 (mirrors the pg GREATEST)
       }
       if (set) Object.assign(row, set);
       persist(d);
@@ -206,6 +207,16 @@ function createFileBackend(): Backend {
       row[field] = cur - amount;
       persist(d);
       return true;
+    },
+    async voidDepositOnce(id) {
+      const d = db();
+      const row = rows(d, "deposits").find((x) => x.id === id) as Record<string, unknown> | undefined;
+      if (!row || row.voided === true) return null;
+      const pts = typeof row.pointsAwarded === "number" ? row.pointsAwarded : 0;
+      row.voided = true;
+      row.pointsAwarded = 0;
+      persist(d);
+      return pts;
     },
   };
 }
@@ -266,6 +277,11 @@ export function bumpUser(
  *  false if insufficient — prevents concurrent redemptions from double-spending. */
 export function spendUserPoints(id: string, cost: number): Promise<boolean> {
   return backend().spend("users", id, "points", cost);
+}
+/** Atomically void a deposit exactly once. Returns the points to reverse (old
+ *  pointsAwarded) or null if it was already voided — prevents double claw-back. */
+export function voidDepositOnce(id: string): Promise<number | null> {
+  return backend().voidDepositOnce(id);
 }
 export function updateDeposit(id: string, partial: Partial<Deposit>): Promise<void> {
   return backend().patch("deposits", id, partial);

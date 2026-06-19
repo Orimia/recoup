@@ -26,19 +26,19 @@ Real, persisted, server-side. App Router Route Handlers on the Node runtime (`ru
 
 | Concern | Implementation |
 |---------|----------------|
-| Persistence | `db.ts` — file-backed JSON store (`.data/db.json`) behind `read()` / `mutate()`. Atomic writes (temp + rename), in-memory cache pinned to `globalThis` so dev HMR doesn't reset it. **Swappable**: re-implement `read`/`mutate` against Postgres/SQLite and nothing else changes. |
+| Persistence | `db.ts` — one granular async API (`loadDB`/`insert`/`patch`/`insertIfNew`/`bump`/`spend`/`voidDepositOnce`) over two interchangeable backends chosen by env: a file store (`.data/db.json`, local/dev) and **Postgres** (`store-pg.ts`, production on Neon). Point-affecting writes are atomic (conditional debit, insert-if-new, clamped increments) so they're correct under serverless concurrency. |
 | Auth | `auth.ts` — `scrypt` password hashing, HMAC-signed httpOnly session cookie (`timingSafeEqual` compares). No external auth dependency. |
 | Classification | `classify.ts` — live Claude vision via `fetch` (with prompt caching) when `ANTHROPIC_API_KEY` is set; labeled heuristic otherwise. 12s abort timeout; any failure falls back so a deposit never errors on the AI path. |
 | Scoring | `challenge/points.ts` — pure functions for points, streak bonus, daily cap. Unit-testable, no I/O. |
 | Read models | `views.ts` — leaderboard, team standings, bracket seeding, per-user stats, admin aggregates. All derived from raw rows so the math lives in one place. |
 
-API surface: `auth/{signup,login,logout}`, `me`, `deposits`, `bins`, `teams`, `leaderboard`, `rewards`, `redemptions`, `admin/stats`.
+API surface: `auth/{signup,login,logout,verify,resend}`, `me`, `deposits`, `bin-events` (signed hardware deposits), `identity/link`, `bins`, `teams`, `leaderboard`, `rewards`, `redemptions`, `bin-code`, `health`, `admin/{stats,void,stations}`.
 
 Client auth state is a small React context (`challenge/useAuth.tsx`) that hydrates from `/api/me` and is consumed by the nav and product pages.
 
-### Why a file-backed store (not SQLite/Postgres)
+### Two storage backends (file for dev, Postgres for production)
 
-For a single-process pilot/demo it is the lowest-risk choice that is still *real* persistence: zero native deps (no node-gyp surprises under Next 16 + Turbopack), survives restarts, trivially inspectable (`cat .data/db.json`). The repository boundary means production is a swap, not a rewrite. Tradeoff: not safe for multi-process/serverless concurrency — fine here, documented for later.
+One repository interface, two backends selected by env (`POSTGRES_URL`/`DATABASE_URL`). **Local/dev:** a file store (`.data/db.json`) — zero native deps (no node-gyp under Next 16 + Turbopack), survives restarts, trivially inspectable (`cat .data/db.json`). **Production (live on Vercel):** Postgres on Neon, one row per record as jsonb. Callers only see the repository boundary, so the same code runs on both. Point-affecting mutations use atomic single-statement SQL (conditional debit, `ON CONFLICT DO NOTHING`, clamped increments) and identity has DB-level uniqueness, so the serverless/multi-instance concurrency a naive file store can't handle is handled correctly in production.
 
 ## Pitch-layer data flow
 
@@ -97,9 +97,9 @@ Flat routing. Every page is a top-level route under `/src/app/`. Top nav is iden
 
 - **VandyID SSO / campus-system integration** — deliberately deferred to Phase 3. The whole strategy is to prove the loop *without* touching campus auth, PII, or money. The challenge uses its own accounts and its own points.
 - **Real meal-money transfer** — rewards are funded by Vanderbilt and "issued" as records; no payment rail is wired.
-- **Hardware / IoT firmware** — bin codes stand in for QR/sensor events.
+- **The assembled physical bin** — the firmware and signed-event API are written and the spec + BOM are done (`firmware/`, `docs/hardware-verification.md`); building the hardware is the next milestone. Until then a rotating bin code stands in for the sensor event.
 - **Model training pipeline** — the vision classifier *infers* via the Claude API; we don't train.
-- **Email verification, password reset, multi-tenant org model, real-time WebSockets** — prototype scope.
+- **Password reset, multi-tenant org model, real-time WebSockets** — prototype scope. (Email verification *is* built and gates redemption.)
 
 Rationale: these are the high-risk, high-effort items. Phase 1 (the live challenge) ships value and generates the dataset without any of them.
 
@@ -107,11 +107,11 @@ Rationale: these are the high-risk, high-effort items. Phase 1 (the live challen
 
 **Phase 1 (done — this build):** standalone challenge. Accounts, AI-verified deposits, points, bracket, rewards, live operator console.
 
-**Phase 2 (proven):**
-1. Postgres/SQLite swap behind the existing repository interface (`db.ts`).
-2. On-device or batched vision (ESP32 + tiny CNN, or server batch) to cut per-deposit API cost.
-3. ESG reporting export (CDP, GRI, SASB templates) from the real deposit ledger.
-4. Email verification + abuse/fraud hardening beyond the daily cap.
+**Phase 2 (in progress):**
+1. Postgres swap behind the repository interface — **done** (live on Neon, atomic concurrency-safe writes, email verification, DB-level identity uniqueness).
+2. The physical smart bin: assemble the sensor-fusion hardware behind the already-written firmware + signed-event API.
+3. On-device or batched vision (ESP32 + tiny CNN, or server batch) to cut per-deposit API cost.
+4. ESG reporting export (CDP, GRI, SASB templates) from the real deposit ledger.
 
 **Phase 3 (optional, from evidence):**
 5. VandyID SSO + meal-money rail integration — only once trust and ROI are demonstrated.
@@ -119,14 +119,11 @@ Rationale: these are the high-risk, high-effort items. Phase 1 (the live challen
 
 ## Deployment
 
-Fully static. `next build` produces a prerendered app deployable anywhere (Vercel, Netlify, Cloudflare Pages, or `next start` on any VM). No env vars required.
+Live on Vercel with Postgres (Neon). It is a server app, not a static export: the API routes run on the Node runtime (`runtime = "nodejs"`, `dynamic = "force-dynamic"`) and persistence is Postgres. The pitch/marketing pages prerender; the product routes are dynamic.
 
 ```bash
 npm run build
-npm start          # for the Next.js runtime
+npm start          # Next.js runtime
 ```
 
-Or export + serve as pure static:
-```bash
-# Next 16 Turbopack supports `output: "export"` in next.config.ts if needed.
-```
+**Production env:** `SESSION_SECRET` is required (the app refuses to boot without it — see `src/instrumentation.ts`), `POSTGRES_URL`/`DATABASE_URL` selects the Postgres backend, and `ANTHROPIC_API_KEY` / `RESEND_API_KEY` enable live vision + verification email. Full list in `.env.production.example`; step-by-step in [deploy.md](deploy.md).

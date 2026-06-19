@@ -27,6 +27,11 @@ export type Backend = {
    *  Returns true if debited, false if the balance was insufficient (or row gone).
    *  This is the anti-double-spend guard. */
   spend(table: Table, id: string, field: string, amount: number): Promise<boolean>;
+  /** Atomically void a deposit exactly once: flip voided→true and zero its points,
+   *  but only if it wasn't already voided. Returns the points to reverse (the old
+   *  pointsAwarded) or null if it was already voided / missing. Prevents double
+   *  claw-back from concurrent void requests. */
+  voidDepositOnce(id: string): Promise<number | null>;
 };
 
 // Field/column names passed to bump()/spend() are always code-controlled
@@ -63,6 +68,22 @@ export function createPgBackend(query: QueryFn, buildSeed: () => DB, version: nu
   async function init(): Promise<void> {
     for (const t of TABLES) {
       await query(`CREATE TABLE IF NOT EXISTS ${t} (id text PRIMARY KEY, data jsonb NOT NULL)`);
+    }
+    // Identity uniqueness enforced at the database, so concurrent signups / card
+    // links can't race past the app-level checks (one mailbox = one account; one
+    // card = one account). Created best-effort: if legacy duplicates already exist
+    // an index won't build, but the app still runs on the app-level checks.
+    const indexes = [
+      `CREATE UNIQUE INDEX IF NOT EXISTS users_email_uniq ON users ((lower(data->>'email')))`,
+      `CREATE UNIQUE INDEX IF NOT EXISTS users_handle_uniq ON users ((lower(data->>'handle')))`,
+      `CREATE UNIQUE INDEX IF NOT EXISTS users_nfcid_uniq ON users ((data->>'nfcId')) WHERE (data->>'nfcId') IS NOT NULL`,
+    ];
+    for (const sql of indexes) {
+      try {
+        await query(sql);
+      } catch (e) {
+        console.warn(`[VandyLoop] uniqueness index skipped: ${(e as Error).message}`);
+      }
     }
     const { rows } = await query(`SELECT count(*)::int AS n FROM teams`);
     if (Number((rows[0] as { n: number }).n) > 0) return; // already seeded
@@ -124,8 +145,10 @@ export function createPgBackend(query: QueryFn, buildSeed: () => DB, version: nu
       if (keys.length === 0 && !(set && Object.keys(set).length)) return;
       // Increments are evaluated against the current row inside the UPDATE, so two
       // concurrent bumps both apply (no read-modify-write race).
+      // GREATEST(0, ...) clamps at zero so a negative delta (a claw-back) can never
+      // drive a counter below zero. Positive deltas (awards) are unaffected.
       const incr = keys
-        .map((k, i) => `'${safeField(k)}', (COALESCE((data->>'${safeField(k)}')::numeric, 0) + $${i + 2})`)
+        .map((k, i) => `'${safeField(k)}', GREATEST(0, COALESCE((data->>'${safeField(k)}')::numeric, 0) + $${i + 2})`)
         .join(", ");
       const params: unknown[] = [id, ...keys.map((k) => deltas[k])];
       let expr = "data";
@@ -149,6 +172,27 @@ export function createPgBackend(query: QueryFn, buildSeed: () => DB, version: nu
         [id, amount]
       );
       return rows.length === 1;
+    },
+    async voidDepositOnce(id) {
+      await ensure();
+      // FOR UPDATE locks the row; the WHERE guard means only the first of any
+      // concurrent voids matches, so the points are reversed exactly once. The
+      // CTE captures the pre-void pointsAwarded (the UPDATE then zeroes it).
+      const { rows } = await query(
+        `WITH target AS (
+           SELECT id, COALESCE((data->>'pointsAwarded')::numeric, 0) AS pts
+             FROM deposits
+            WHERE id = $1 AND COALESCE((data->>'voided')::boolean, false) = false
+            FOR UPDATE
+         )
+         UPDATE deposits d
+            SET data = d.data || jsonb_build_object('voided', true, 'pointsAwarded', 0)
+           FROM target
+          WHERE d.id = target.id
+          RETURNING target.pts AS reversed`,
+        [id]
+      );
+      return rows.length ? Number((rows[0] as { reversed: number }).reversed) : null;
     },
   };
 }

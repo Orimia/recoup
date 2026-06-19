@@ -67,7 +67,16 @@ export async function POST(req: Request) {
     consentAt: Date.now(),
     nfcId: null,
   };
-  await insertUser(user);
+  try {
+    await insertUser(user);
+  } catch (e) {
+    // The unique indexes (email/handle) are the race-safe backstop behind the
+    // checks above: a concurrent signup that slipped past them is rejected here.
+    if ((e as { code?: string }).code === "23505") {
+      return bad("An account with that email or handle already exists.", 409);
+    }
+    throw e;
+  }
   await setSession(user.id);
 
   // Send (or, in dev, log) the verification link. Surface the dev link so a demo
