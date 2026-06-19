@@ -1,5 +1,7 @@
 # Recoup / VandyLoop
 
+[![CI](https://github.com/Orimia/recoup/actions/workflows/ci.yml/badge.svg)](https://github.com/Orimia/recoup/actions/workflows/ci.yml)
+
 Verified recycle-to-reward for universities. Students earn instant rewards for recycling that is actually verified, and the school gets clean, can-by-can data it can act on.
 
 **Live demo: https://vandyloop.vercel.app** (sign up, log a return, watch it flow through verification, reward, and the operator dashboard)
@@ -50,6 +52,15 @@ npm run dev      # http://localhost:3000, seeds itself with demo data
 ```
 
 No keys required to run. Add `ANTHROPIC_API_KEY` to enable live Claude vision classification, otherwise it uses a labeled heuristic. See [.env.production.example](.env.production.example) for all options and [docs/deploy.md](docs/deploy.md) to deploy.
+
+### Testing
+
+```bash
+npm test    # scoring, HMAC bin events, geofence, anti-fraud, + a Postgres test
+            # proving point mutations are concurrency-safe (no double-spend)
+```
+
+CI (GitHub Actions) runs lint, tests, and a production build on every push.
 
 ## Docs
 
