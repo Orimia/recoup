@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { TopNav } from "@/components/shell/top-nav";
@@ -15,10 +15,32 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const TITLE = "Recoup / VandyLoop — AI-powered recycling optimization";
+const DESCRIPTION =
+  "VandyLoop turns campus recycling into verified behavior, measurable outcomes, and optimized operations. Vanderbilt pilot by Recoup.";
+
 export const metadata: Metadata = {
-  title: "Recoup / VandyLoop — AI-powered recycling optimization",
-  description:
-    "VandyLoop turns campus recycling into verified behavior, measurable outcomes, and optimized operations. Vanderbilt pilot by Recoup.",
+  metadataBase: new URL("https://vandyloop.vercel.app"),
+  title: TITLE,
+  description: DESCRIPTION,
+  // og:image and twitter:image are provided by src/app/opengraph-image.tsx
+  openGraph: {
+    type: "website",
+    url: "https://vandyloop.vercel.app",
+    siteName: "Recoup / VandyLoop",
+    title: TITLE,
+    description: DESCRIPTION,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#1e5b46",
 };
 
 export default function RootLayout({

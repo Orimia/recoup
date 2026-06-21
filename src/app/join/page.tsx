@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Recycle, ArrowRight, Loader2 } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/challenge/useAuth";
 import type { TeamOption } from "@/lib/challenge/types";
 
@@ -69,12 +70,11 @@ export default function JoinPage() {
 
   return (
     <div className="flex-1 grid lg:grid-cols-2">
+      <h1 className="sr-only lg:hidden">Join the VandyLoop recycling challenge</h1>
       {/* Left: pitch */}
       <div className="hidden lg:flex flex-col justify-center px-12 border-r border-line bg-brand-wash/40">
         <div className="max-w-md">
-          <div className="h-11 w-11 rounded-full bg-brand text-white grid place-items-center mb-6">
-            <Recycle className="h-5 w-5" />
-          </div>
+          <Image src="/recoup-logo.png" alt="Recoup" width={245} height={245} priority className="h-11 w-11 mb-6" />
           <h1 className="font-display text-4xl font-semibold tracking-tight leading-[1.1] text-ink">
             Join the VandyLoop March Madness recycling challenge.
           </h1>

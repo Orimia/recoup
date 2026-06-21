@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Recycle } from "lucide-react";
+import Image from "next/image";
 
 export const metadata = {
   title: "Pilot terms & privacy — VandyLoop",
@@ -13,9 +13,7 @@ export default function TermsPage() {
     <div className="flex-1">
       <div className="mx-auto max-w-2xl px-6 py-16">
         <Link href="/" className="inline-flex items-center gap-2 mb-8">
-          <div className="h-8 w-8 rounded-full bg-ink text-paper grid place-items-center">
-            <Recycle className="h-4 w-4" />
-          </div>
+          <Image src="/recoup-logo.png" alt="Recoup" width={245} height={245} className="h-8 w-8" />
           <span className="font-display font-semibold tracking-tight">Recoup / VandyLoop</span>
         </Link>
 

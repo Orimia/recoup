@@ -381,7 +381,7 @@ function buildSteps(): Step[] {
             height={200}
             forecastAfter="W0"
           />
-          <div className="mt-4 grid grid-cols-4 gap-3 text-[12px]">
+          <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3 text-[12px]">
             <MiniMetric label="Returns (wk)" value="12,825" delta="+14%" />
             <MiniMetric label="Users (wk)" value="3,742" delta="+9%" />
             <MiniMetric label="Contam" value="5.8%" delta="−11%" />

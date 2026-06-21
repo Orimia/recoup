@@ -13,7 +13,7 @@
   --ink: #0f1511;
   --ink-2: #2a322c;
   --ink-3: #4b5350;
-  --ink-4: #7a817d;
+  --ink-4: #67706b; /* WCAG AA (>=4.5:1) on paper/white/paper-2/brand-wash */
   --ink-5: #a9aeab;
   --line: #e4e2d9;
   --line-strong: #c9c5b8;
