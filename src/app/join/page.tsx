@@ -72,22 +72,24 @@ export default function JoinPage() {
     <div className="flex-1 grid lg:grid-cols-2">
       <h1 className="sr-only lg:hidden">Join the VandyLoop recycling challenge</h1>
       {/* Left: pitch */}
-      <div className="hidden lg:flex flex-col justify-center px-12 border-r border-line bg-brand-wash/40">
-        <div className="max-w-md">
-          <Image src="/recoup-logo.png" alt="Recoup" width={245} height={245} priority className="h-11 w-11 mb-6" />
-          <h1 className="font-display text-4xl font-semibold tracking-tight leading-[1.1] text-ink">
-            Join the VandyLoop March Madness recycling challenge.
-          </h1>
-          <p className="mt-4 text-[15px] text-ink-3 leading-relaxed">
-            Recycle a can, scan the bin, earn points. Compete for your dorm or org in a live
-            bracket. Cash points in for coffee, meal money, tickets, and more — funded by
-            Vanderbilt.
-          </p>
-          <ul className="mt-6 space-y-2 text-[14px] text-ink-3">
-            <Bullet>Every return is AI-verified, so points are real.</Bullet>
-            <Bullet>Your dorm climbs the bracket as you recycle.</Bullet>
-            <Bullet>No app to install. No card linked. Just your account.</Bullet>
-          </ul>
+      <div className="hidden lg:flex flex-col px-12 border-r border-line bg-brand-wash/40">
+        <div className="lg:sticky lg:top-14 lg:h-[calc(100dvh_-_3.5rem)] flex flex-col justify-center">
+          <div className="max-w-md">
+            <Image src="/recoup-logo.png" alt="Recoup" width={245} height={245} priority className="h-11 w-11 mb-6" />
+            <h1 className="font-display text-4xl font-semibold tracking-tight leading-[1.1] text-ink">
+              Join the VandyLoop March Madness recycling challenge.
+            </h1>
+            <p className="mt-4 text-[15px] text-ink-3 leading-relaxed">
+              Recycle a can, scan the bin, earn points. Compete for your dorm or org in a live
+              bracket. Cash points in for coffee, meal money, tickets, and more — funded by
+              Vanderbilt.
+            </p>
+            <ul className="mt-6 space-y-2 text-[14px] text-ink-3">
+              <Bullet>Every return is AI-verified, so points are real.</Bullet>
+              <Bullet>Your dorm climbs the bracket as you recycle.</Bullet>
+              <Bullet>No app to install. No card linked. Just your account.</Bullet>
+            </ul>
+          </div>
         </div>
       </div>
 
