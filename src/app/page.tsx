@@ -31,7 +31,7 @@ export default function Landing() {
           <div className="flex items-center gap-2 mb-6">
             <Badge tone="brand">
               <Dot tone="brand" />
-              60-day Vanderbilt pilot · live
+              Vanderbilt pilot · live now
             </Badge>
             <Badge tone="neutral">Recoup · Cleantech · AI</Badge>
           </div>
