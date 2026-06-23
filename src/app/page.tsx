@@ -72,9 +72,9 @@ export default function Landing() {
           {/* hero impact ribbon */}
           <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12">
             <HeroStat
-              label="Pilot cans recovered"
+              label="Cans recovered"
               value={formatCompact(pilotImpactToday.cans)}
-              sublabel="60-day pilot to date"
+              sublabel="projected at full-campus scale"
             />
             <HeroStat
               label="Resale value"
@@ -89,9 +89,12 @@ export default function Landing() {
             <HeroStat
               label="Active students"
               value={formatCompact(3742)}
-              sublabel="pilot participants"
+              sublabel="projected at full-campus scale"
             />
           </div>
+          <p className="mt-4 text-[12px] text-ink-4">
+            Figures projected at full-campus adoption. The pilot is live now, try it above.
+          </p>
         </div>
       </section>
 

@@ -15,6 +15,7 @@ import {
 import { PageHeader, Section, SectionHeader } from "@/components/ui/section";
 import { Card, CardBody, CardHeader, CardTitle, CardSubtitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ProjectionBanner } from "@/components/ui/projection-banner";
 import {
   computeScenario,
   defaultInputs,
@@ -41,10 +42,13 @@ export default function SimulatorPage() {
 
   return (
     <div>
+      <ProjectionBanner>
+        A what-if model. Outputs are computed projections from published constants, not live pilot data.
+      </ProjectionBanner>
       <PageHeader
         eyebrow="Pilot scenario simulator"
         title="Model any campus footprint in real time."
-        subtitle="Move the sliders. Every output number is computed from the same math we use internally — no hidden multipliers."
+        subtitle="Move the sliders. Every output number is computed from the same math we use internally, with no hidden multipliers."
         actions={
           <div className="flex items-center gap-2">
             {Object.keys(presets).map((p) => (

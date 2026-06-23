@@ -17,6 +17,7 @@ import {
 import { PageHeader, Section, SectionHeader } from "@/components/ui/section";
 import { Card, CardBody, CardHeader, CardTitle, CardSubtitle } from "@/components/ui/card";
 import { InsightCard } from "@/components/ui/insight-card";
+import { ProjectionBanner } from "@/components/ui/projection-banner";
 import { Badge, Dot } from "@/components/ui/badge";
 import { TrendLine } from "@/components/ui/charts";
 import { Progress } from "@/components/ui/progress";
@@ -47,15 +48,15 @@ export default function AiPage() {
 
   return (
     <div>
+      <ProjectionBanner>
+        Planned models, shown for illustration. No AI is running yet. The AI layer activates once verified bins generate real data, and that dataset is the moat.
+      </ProjectionBanner>
       <PageHeader
-        eyebrow="AI insights & optimization"
-        title="The models that make VandyLoop a system."
-        subtitle="Four production models running continuously against live event data. Each surface below is actual pilot output."
+        eyebrow="AI roadmap · planned models"
+        title="The models that will make VandyLoop a system."
+        subtitle="Planned, not live. These are illustrative outputs; the real models train once the bins produce verified events."
         actions={
-          <Badge tone="brand">
-            <Dot tone="brand" />
-            All models healthy
-          </Badge>
+          <Badge tone="amber">Planned</Badge>
         }
       />
 

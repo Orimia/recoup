@@ -20,6 +20,7 @@ import { InsightCard } from "@/components/ui/insight-card";
 import { EventStream } from "@/components/ui/event-stream";
 import { TrendArea, SimpleBar } from "@/components/ui/charts";
 import { Progress } from "@/components/ui/progress";
+import { ProjectionBanner } from "@/components/ui/projection-banner";
 import { bins, pilotKpis } from "@/lib/data/bins";
 import { insights, recommendedActions } from "@/lib/data/insights";
 import { weeklyTrend, hourlyTrend } from "@/lib/data/trends";
@@ -32,16 +33,16 @@ export default function DashboardPage() {
 
   return (
     <div>
+      <ProjectionBanner>
+        Projected operations at full-campus scale (~120 bins). Illustrative model, not live pilot data. The live pilot runs in the Challenge and the private operator console.
+      </ProjectionBanner>
       <PageHeader
-        eyebrow="Operator dashboard · live"
-        title="VandyLoop · Vanderbilt pilot"
-        subtitle="What's happening across 8 bins right now. Every number is event-level verified."
+        eyebrow="Vision · projected at full-campus scale"
+        title="VandyLoop · operations at scale"
+        subtitle="What the operator view looks like at full-campus adoption. Illustrative model, not live pilot data."
         actions={
           <div className="flex items-center gap-2">
-            <Badge tone="brand">
-              <Dot tone="brand" />
-              Live · {pilotKpis.uptime * 100 >= 99 ? "all systems go" : "degraded"}
-            </Badge>
+            <Badge tone="amber">Projected</Badge>
             <Link
               href="/ai"
               className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-[13px] font-medium text-ink-3 hover:text-ink hover:bg-paper-2"

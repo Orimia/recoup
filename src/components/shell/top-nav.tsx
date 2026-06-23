@@ -13,8 +13,7 @@ const nav = [
   { href: "/challenge", label: "Challenge" },
   { href: "/leaderboard", label: "Leaderboard" },
   { href: "/rewards", label: "Rewards" },
-  { href: "/dashboard", label: "Operator" },
-  { href: "/simulator", label: "Simulator" },
+  { href: "/dashboard", label: "Vision" },
 ];
 
 export function TopNav() {
