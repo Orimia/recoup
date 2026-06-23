@@ -68,14 +68,14 @@ export default function AiPage() {
             desc="ResNet-50 fine-tuned on 14K Vanderbilt samples"
             metric="96.3% accuracy"
             trainedOn="14,200 labels"
-            status="serving"
+            status="planned"
           />
           <ModelStatCard
             name="incentive-bandit/v2"
             desc="Thompson sampling · 4 reward variants"
             metric="+22% first-return lift"
             trainedOn="840 matched users"
-            status="serving"
+            status="planned"
             highlight
           />
           <ModelStatCard
@@ -83,23 +83,23 @@ export default function AiPage() {
             desc="Temporal CNN · 72-hour horizon"
             metric="MAE 6.4% fill"
             trainedOn="14 days × 8 bins"
-            status="serving"
+            status="planned"
           />
           <ModelStatCard
             name="behavior-segmenter/v2"
             desc="Temporal clustering · 4 cohorts"
             metric="89% silhouette"
             trainedOn="6,812 student traces"
-            status="serving"
+            status="planned"
           />
         </div>
 
         {/* Filters + insights */}
         <div>
           <SectionHeader
-            eyebrow="Live output"
-            title="Decisions the system made this week"
-            subtitle="Filter by model. Every insight ships with reasoning, confidence, and a recommended action."
+            eyebrow="Example output"
+            title="Decisions the system would surface"
+            subtitle="Filter by model. Every insight would ship with reasoning, confidence, and a recommended action. Illustrative, not live."
             actions={
               <div className="inline-flex items-center gap-1.5 text-[11px] text-ink-4">
                 <Filter className="h-3 w-3" />
