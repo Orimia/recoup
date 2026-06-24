@@ -169,8 +169,8 @@ export default function AdminPage() {
     <div>
       <PageHeader
         eyebrow="Operator console · live challenge data"
-        title="VandyLoop Challenge — live operations"
-        subtitle="This console reads the real challenge database: every signup, verified return, and redemption. Distinct from the pitch dashboard, which models full-scale projections."
+        title="VandyLoop Challenge: live operations"
+        subtitle="This console reads the real challenge database: every signup, verified return, and redemption. Pre-launch it shows seeded demo data; live student activity begins at launch. Distinct from the Vision dashboard, which models full-scale projections."
         actions={
           <div className="flex items-center gap-2">
             <Badge tone={stats.aiEnabled ? "brand" : "slate"}>
@@ -181,7 +181,7 @@ export default function AdminPage() {
               href="/dashboard"
               className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-[13px] font-medium text-ink-3 hover:text-ink hover:bg-paper-2"
             >
-              Pitch dashboard →
+              Vision dashboard →
             </Link>
           </div>
         }
