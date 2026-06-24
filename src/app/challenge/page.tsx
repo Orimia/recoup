@@ -279,7 +279,7 @@ export default function ChallengePage() {
           <StatTile label="Lifetime points" value={user.lifetimePoints} />
           <StatTile label="Total returns" value={user.deposits} />
           <StatTile
-            label="Team rank"
+            label="Your rank"
             value={stats ? `#${stats.rankOverall}` : "—"}
             sub={stats ? `of ${stats.totalStudents} students` : ""}
           />
