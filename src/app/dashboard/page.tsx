@@ -236,7 +236,7 @@ export default function DashboardPage() {
             <CardBody>
               <SimpleBar data={hourlyTrend} xKey="hour" yKey="returns" height={180} highlight="1p" />
               <div className="mt-3 text-[12px] text-ink-4">
-                Contamination jumps 2.8× after 8 PM — currently open insight.
+                Contamination jumps 2.8× after 8 PM, currently open insight.
               </div>
             </CardBody>
           </Card>

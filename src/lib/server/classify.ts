@@ -136,7 +136,7 @@ function heuristic(hadPhoto: boolean): Classification {
       material: "contaminant",
       confidence: 0.72 + Math.random() * 0.2,
       contaminants: [kind],
-      note: `Looks like a ${kind} — flagged as contamination.`,
+      note: `Looks like a ${kind}, flagged as contamination.`,
       classifiedBy: "heuristic",
     };
   }

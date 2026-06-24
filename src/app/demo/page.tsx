@@ -239,7 +239,7 @@ function buildSteps(): Step[] {
         </div>
       ),
       notes:
-        "This is the only screen a student ever sees. Keep the story boring on purpose — the habit is the product, not the app. Mention: we don't ship a new consumer app, we live inside VandyID.",
+        "This is the only screen a student ever sees. Keep the story boring on purpose, the habit is the product, not the app. Mention: we don't ship a new consumer app, we live inside VandyID.",
     },
     {
       id: "3-verified",
@@ -363,7 +363,7 @@ function buildSteps(): Step[] {
         </div>
       ),
       notes:
-        "This is the magic moment. The model didn't just flag a number — it correlated contamination spikes with ambient lighting, explained it in English, and recommended a $50 lighting upgrade that saves $310/mo. That's the loop working.",
+        "This is the magic moment. The model didn't just flag a number, it correlated contamination spikes with ambient lighting, explained it in English, and recommended a $50 lighting upgrade that saves $310/mo. That's the loop working.",
     },
     {
       id: "6-dashboard",
@@ -397,7 +397,7 @@ function buildSteps(): Step[] {
       label: "Pilot impact",
       title: "Projected at pilot scale · 8 bins → 120 bins.",
       subtitle:
-        "One campus. Full deployment. Every number computed from formulas on the landing page — not pitch-deck math.",
+        "One campus. Full deployment. Every number computed from formulas on the landing page, not pitch-deck math.",
       tone: "brand",
       content: (
         <div className="grid md:grid-cols-4 gap-3">
@@ -427,7 +427,7 @@ function buildSteps(): Step[] {
         </div>
       ),
       notes:
-        "This is the leap. If we extend from the pilot to the full campus, here's what it looks like. Not 'up-to' or 'projected' — computed, using pilot-observed economics.",
+        "This is the leap. If we extend from the pilot to the full campus, here's what it looks like. Not 'up-to' or 'projected', computed, using pilot-observed economics.",
     },
     {
       id: "8-network",

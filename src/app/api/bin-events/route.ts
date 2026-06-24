@@ -68,7 +68,7 @@ export async function POST(req: Request) {
     classifiedBy: "sensor",
     contaminants: isAluminum ? [] : ["rejected at bin"],
     pointsAwarded: result.points,
-    note: isAluminum ? "Verified at bin (sensor fusion)" : "Rejected at bin — not aluminum",
+    note: isAluminum ? "Verified at bin (sensor fusion)" : "Rejected at bin, not aluminum",
     createdAt: Date.now(),
     flags: [],
     trust: 1,

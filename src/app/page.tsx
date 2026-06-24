@@ -152,8 +152,8 @@ export default function Landing() {
               Not a bin. A verified-behavior data layer, wrapped in operations.
             </h2>
             <p className="mt-4 text-[15px] text-ink-3 leading-relaxed">
-              The bin is a trojan horse. The product is a dataset no one else has — student-level,
-              timestamped, verified recycling events — and the AI layer that turns it into
+              The bin is a trojan horse. The product is a dataset no one else has: student-level,
+              timestamped, verified recycling events, and the AI layer that turns it into
               decisions operators can act on before the next hauler trip.
             </p>
           </div>
@@ -168,7 +168,7 @@ export default function Landing() {
             <DiffCard
               Icon={Sparkles}
               title="AI that makes decisions, not slides"
-              body="Behavior prediction + incentive bandits + contamination vision + service-route forecasting, running continuously — not once a quarter."
+              body="Behavior prediction + incentive bandits + contamination vision + service-route forecasting, running continuously, not once a quarter."
               metric="5 models in production"
             />
             <DiffCard
@@ -217,7 +217,7 @@ export default function Landing() {
           <AiStackCard
             num="04"
             title="Segmentation · Behavior"
-            body="Clusters students by return motivation. Halftime-spiker, first-timer, regular — each gets different nudges."
+            body="Clusters students by return motivation. Halftime-spiker, first-timer, regular, each gets different nudges."
             foot="4 active cohorts"
           />
         </div>
@@ -290,7 +290,7 @@ export default function Landing() {
         </h2>
         <p className="mt-4 text-[15px] text-ink-3 max-w-2xl">
           Hover any tile to see the formula. Every impact number is derived from event-level data +
-          published aluminum recycling economics — not extrapolated estimates.
+          published aluminum recycling economics, not extrapolated estimates.
         </p>
 
         <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -331,14 +331,14 @@ export default function Landing() {
         <Section>
           <div className="max-w-3xl mb-12">
             <div className="text-[11px] uppercase tracking-[0.14em] text-brand font-semibold mb-3">
-              How we start — without touching campus systems
+              How we start, without touching campus systems
             </div>
             <h2 className="font-display text-3xl md:text-4xl font-semibold tracking-tight leading-[1.1]">
               Earn trust before we touch a card reader.
             </h2>
             <p className="mt-4 text-[15px] text-ink-3 leading-relaxed">
               Integrating directly with VandyID and meal money on day one is a security and
-              liability minefield — student PII and real balances on the line. So we don&apos;t.
+              liability minefield, student PII and real balances on the line. So we don&apos;t.
               We launch a standalone challenge with our own points, funded by Vanderbilt. We prove
               the behavior loop works on real students first. Integration is a later, optional step
               taken from a position of evidence.
@@ -357,7 +357,7 @@ export default function Landing() {
               num="Phase 2 · proven"
               title="Operational data layer"
               body="The challenge generates the verified-behavior dataset no campus has: who recycles, where, when, how clean. Sustainability ops gets real ESG-grade numbers and routing insight."
-              foot="See it → /admin (live data)"
+              foot="Live in the private operator console"
             />
             <PhaseCard
               num="Phase 3 · optional"

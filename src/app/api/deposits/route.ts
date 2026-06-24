@@ -92,7 +92,7 @@ export async function POST(req: Request) {
   if (duplicateImage) {
     points = 0;
     countsTowardStreak = false;
-    note = "Duplicate photo detected — no points awarded.";
+    note = "Duplicate photo detected, no points awarded.";
   }
 
   const deposit: Deposit = {

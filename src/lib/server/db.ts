@@ -99,7 +99,7 @@ function buildSeed(): DB {
         classifiedBy: "heuristic",
         contaminants: contaminated ? ["coffee cup"] : [],
         pointsAwarded: contaminated ? 0 : 10,
-        note: contaminated ? "Flagged contaminant — no points" : "Verified aluminum",
+        note: contaminated ? "Flagged contaminant, no points" : "Verified aluminum",
         createdAt: ts,
         flags: [],
         trust: 1,

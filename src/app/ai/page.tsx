@@ -185,7 +185,7 @@ export default function AiPage() {
                     Try your own
                   </div>
                   <div className="text-[12px] text-ink-3">
-                    Drop an image to simulate a classifier pass. This is a visual mock — the real
+                    Drop an image to simulate a classifier pass. This is a visual mock, the real
                     model runs on sensor-fused inputs.
                   </div>
                 </div>

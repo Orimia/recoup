@@ -38,7 +38,7 @@ export default function StudentPage() {
       <PageHeader
         eyebrow="Student experience"
         title="Tap. Drop. Earn. Repeat."
-        subtitle="The whole student loop is three taps. We kept the UI boring on purpose — recycling is the habit, not the app."
+        subtitle="The whole student loop is three taps. We kept the UI boring on purpose, recycling is the habit, not the app."
         actions={
           <Badge tone="brand">
             <Dot tone="brand" />

@@ -70,7 +70,7 @@ export default function RewardsPage() {
       <PageHeader
         eyebrow="Rewards store"
         title="Turn cans into real perks."
-        subtitle="Points are funded by Vanderbilt and campus partners. No card linked, no money at risk — just rewards for recycling."
+        subtitle="Points are funded by Vanderbilt and campus partners. No card linked, no money at risk, just rewards for recycling."
         actions={
           user ? (
             <Badge tone="brand">
@@ -155,7 +155,7 @@ export default function RewardsPage() {
         </div>
 
         <p className="mt-6 text-[12px] text-ink-4 max-w-2xl">
-          Redeeming spends your balance but never touches your lifetime points — your leaderboard
+          Redeeming spends your balance but never touches your lifetime points, your leaderboard
           standing and your team&apos;s bracket position stay intact.
         </p>
       </Section>

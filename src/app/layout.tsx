@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const TITLE = "Recoup / VandyLoop — AI-powered recycling optimization";
+const TITLE = "Recoup / VandyLoop · AI-powered recycling optimization";
 const DESCRIPTION =
   "VandyLoop turns campus recycling into verified behavior, measurable outcomes, and optimized operations. Vanderbilt pilot by Recoup.";
 

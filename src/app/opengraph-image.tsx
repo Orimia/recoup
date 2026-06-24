@@ -4,7 +4,7 @@ import { join } from "node:path";
 
 // Branded social-share card shown when vandyloop.vercel.app is pasted into
 // LinkedIn / Slack / iMessage / X / a YC application. Satori renders flexbox only.
-export const alt = "Recoup / VandyLoop — verified recycle-to-reward for universities";
+export const alt = "Recoup / VandyLoop · verified recycle-to-reward for universities";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

@@ -58,7 +58,7 @@ export function award({
       countedTowardCap: false,
       newStreakDays: streakDays,
       awardedStreakBonus: false,
-      reason: "Not aluminum — recorded as contamination, no points.",
+      reason: "Not aluminum, recorded as contamination, no points.",
     };
   }
 

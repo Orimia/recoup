@@ -86,7 +86,7 @@ export default function LeaderboardPage() {
           <SectionHeader
             eyebrow="The bracket"
             title="Championship picture"
-            subtitle="Seeded by current points. Higher total advances — so recruit your hall and recycle."
+            subtitle="Seeded by current points. Higher total advances, so recruit your hall and recycle."
             actions={
               championTeam ? (
                 <Badge tone="brand">

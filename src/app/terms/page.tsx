@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 export const metadata = {
-  title: "Pilot terms & privacy — VandyLoop",
+  title: "Pilot terms & privacy · VandyLoop",
 };
 
 // Plain-English pilot terms + privacy notice. This is a builder's draft to make
@@ -60,8 +60,8 @@ export default function TermsPage() {
 
           <Section title="Fair play">
             Returns are verified (location, a rotating bin code, photo classification, and
-            duplicate detection). Attempting to farm points — fake returns, reused photos,
-            logging from off-site — can result in points being reversed or your account removed.
+            duplicate detection). Attempting to farm points, fake returns, reused photos,
+            logging from off-site, can result in points being reversed or your account removed.
           </Section>
 
           <Section title="Your choices">

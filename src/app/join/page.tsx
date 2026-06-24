@@ -81,7 +81,7 @@ export default function JoinPage() {
             </h1>
             <p className="mt-4 text-[15px] text-ink-3 leading-relaxed">
               Recycle a can, scan the bin, earn points. Compete for your dorm or org in a live
-              bracket. Cash points in for coffee, meal money, tickets, and more — funded by
+              bracket. Cash points in for coffee, meal money, tickets, and more, funded by
               Vanderbilt.
             </p>
             <ul className="mt-6 space-y-2 text-[14px] text-ink-3">
@@ -215,7 +215,7 @@ export default function JoinPage() {
           </form>
 
           <p className="mt-4 text-[12px] text-ink-4">
-            Prototype accounts. We store your email + a hashed password only — no card, no campus
+            Prototype accounts. We store your email + a hashed password only, no card, no campus
             credentials.{" "}
             <Link href="/" className="text-brand hover:underline">
               Back to overview

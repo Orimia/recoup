@@ -229,7 +229,7 @@ export default function ChallengePage() {
     <div>
       <PageHeader
         eyebrow={`Competing for ${user.teamName}`}
-        title={`Hey ${user.name.split(" ")[0]} — keep the loop going.`}
+        title={`Hey ${user.name.split(" ")[0]}, keep the loop going.`}
         subtitle="Scan a VandyLoop bin, drop your can, and earn verified points for your team."
         actions={
           <div className="flex items-center gap-2">
@@ -449,7 +449,7 @@ export default function ChallengePage() {
                 </ul>
               ) : (
                 <div className="py-10 text-center text-[13px] text-ink-4">
-                  No returns yet. Log your first one — it only takes a tap.
+                  No returns yet. Log your first one, it only takes a tap.
                 </div>
               )}
               <div className="mt-4 pt-4 border-t border-line flex items-center justify-between">
@@ -501,7 +501,7 @@ function GeoControl({
         {distanceM !== null
           ? near
             ? `At the bin (~${distanceM} m). Presence verified.`
-            : `~${distanceM} m away — move closer for full trust.`
+            : `~${distanceM} m away, move closer for full trust.`
           : "Location captured."}
       </div>
     );
@@ -510,7 +510,7 @@ function GeoControl({
     return (
       <div className="flex items-center gap-2 rounded-[var(--radius-sm)] px-3 py-2 text-[12px] border bg-paper-2 border-line text-ink-4">
         <ShieldAlert className="h-4 w-4" />
-        Location unavailable — deposit will be logged but flagged unverified.
+        Location unavailable, deposit will be logged but flagged unverified.
       </div>
     );
   }
