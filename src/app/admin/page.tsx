@@ -246,7 +246,7 @@ export default function AdminPage() {
               />
               <div className="pt-3 border-t border-line text-[12px] text-ink-3 leading-relaxed">
                 {stats.aiEnabled
-                  ? "Live Claude vision is enabled — uploaded photos are classified by the model."
+                  ? "Live Claude vision is enabled, uploaded photos are classified by the model."
                   : "No ANTHROPIC_API_KEY set, so classification uses the labeled heuristic. Add a key to switch the same code path to live Claude vision."}
               </div>
             </CardBody>
@@ -342,7 +342,7 @@ export default function AdminPage() {
                 Integrity & fraud review
               </CardTitle>
               <CardSubtitle>
-                Flagged returns from the verification pipeline. Void to claw back points — fully
+                Flagged returns from the verification pipeline. Void to claw back points, fully
                 reversible because points, not money, are at stake.
               </CardSubtitle>
             </div>
