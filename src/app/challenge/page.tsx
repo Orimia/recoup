@@ -230,7 +230,7 @@ export default function ChallengePage() {
       <PageHeader
         eyebrow={`Competing for ${user.teamName}`}
         title={`Hey ${user.name.split(" ")[0]}, keep the loop going.`}
-        subtitle="Scan a VandyLoop bin, drop your can, and earn verified points for your team."
+        subtitle="Tap a VandyLoop bin, drop your can, and earn verified points for your team. Top recyclers win the season's prizes."
         actions={
           <div className="flex items-center gap-2">
             <Badge tone="brand">
@@ -294,7 +294,7 @@ export default function ChallengePage() {
                 <CardSubtitle>
                   {aiEnabled
                     ? "Photos verified by Claude vision; presence verified by bin code + location."
-                    : "Verified by bin code + location (AI vision simulated in this build)."}
+                    : "Verified by the bin's sensors and your tap (this web build simulates the bin sensor)."}
                 </CardSubtitle>
               </div>
               <Badge tone={aiEnabled ? "brand" : "slate"}>

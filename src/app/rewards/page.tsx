@@ -70,7 +70,7 @@ export default function RewardsPage() {
       <PageHeader
         eyebrow="Rewards store"
         title="Turn cans into real perks."
-        subtitle="Points are funded by Vanderbilt and campus partners. No card linked, no money at risk, just rewards for recycling."
+        subtitle="Recycle 5+ verified cans to unlock perks, and climb the leaderboard for the season's prize pool. Funded by Vanderbilt and campus partners, no card linked, no money at risk."
         actions={
           user ? (
             <Badge tone="brand">

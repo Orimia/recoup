@@ -69,7 +69,7 @@ export default function LeaderboardPage() {
       <PageHeader
         eyebrow="VandyLoop · March Madness recycling challenge"
         title="The bracket is live."
-        subtitle="Dorms and orgs seeded by recycling volume. Every verified can moves your team up. Updates every 15 seconds."
+        subtitle="Dorms and orgs seeded by recycling volume. Every verified can moves your team up and earns a raffle entry for the season's prizes."
         actions={
           <Link
             href="/join"
@@ -81,6 +81,42 @@ export default function LeaderboardPage() {
       />
 
       <Section className="py-8 space-y-10">
+        {/* Season prizes */}
+        <Card>
+          <CardBody>
+            <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+              <div>
+                <div className="text-[11px] uppercase tracking-[0.14em] text-brand font-semibold mb-1">
+                  Season prizes
+                </div>
+                <h3 className="font-display text-xl font-semibold tracking-tight">Recycle to win</h3>
+              </div>
+              <Badge tone="amber">Funded by Vanderbilt + sponsors</Badge>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-[13px]">
+              <div className="rounded-[var(--radius-sm)] border border-line bg-paper-2 p-3">
+                <div className="font-semibold text-ink">Grand prize</div>
+                <div className="text-ink-3 mt-0.5">Weighted raffle: every verified can is one entry</div>
+              </div>
+              <div className="rounded-[var(--radius-sm)] border border-line bg-paper-2 p-3">
+                <div className="font-semibold text-ink">2nd place</div>
+                <div className="text-ink-3 mt-0.5">Runner-up prize</div>
+              </div>
+              <div className="rounded-[var(--radius-sm)] border border-line bg-paper-2 p-3">
+                <div className="font-semibold text-ink">3rd to 5th</div>
+                <div className="text-ink-3 mt-0.5">Tiered prizes</div>
+              </div>
+              <div className="rounded-[var(--radius-sm)] border border-line bg-paper-2 p-3">
+                <div className="font-semibold text-ink">Everyone</div>
+                <div className="text-ink-3 mt-0.5">5+ verified cans unlocks a perk</div>
+              </div>
+            </div>
+            <p className="mt-3 text-[12px] text-ink-4">
+              Winning dorm takes the bracket. Points come only from sensor-verified cans, capped per day, so the leaderboard stays fair.
+            </p>
+          </CardBody>
+        </Card>
+
         {/* Bracket */}
         <div>
           <SectionHeader

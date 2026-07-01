@@ -350,7 +350,7 @@ export default function Landing() {
               num="Phase 1 · now"
               title="Standalone challenge"
               live
-              body="Our own web app and points economy. Students sign up, log AI-verified returns, compete in a dorm bracket, redeem Vanderbilt-funded rewards. Zero campus-system access. Zero money at risk."
+              body="Our own web app and points economy. Students sign up, log sensor-verified returns, compete in a dorm bracket, and win Vanderbilt-funded prizes. Zero campus-system access. Zero money at risk."
               foot="Live in this build → /challenge"
             />
             <PhaseCard
